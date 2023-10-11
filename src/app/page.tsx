@@ -1,5 +1,4 @@
 "use client";
-// import Navbar from '@/components/Navbar';
 import dynamic from 'next/dynamic'
 
 export const DynamicHeader = dynamic(() => import('../components/Navbar'), {
@@ -13,9 +12,13 @@ const HomePage = () => {
   const [products, setProducts] = useState<any>()
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get("https://fakestoreapi.com/products?limit=5")
-      setProducts(res.data);
-      return res.data
+      try {
+        const res = await axios.get("https://fakestoreapi.com/products?limit=5")
+        setProducts(res.data);
+        return res.data
+      } catch (error) {
+        console.log(error);
+      }
     }
     fetchData()
   }, [])
@@ -40,7 +43,7 @@ const HomePage = () => {
           <h2 className="text-3xl font-semibold mb-8">Featured Products</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {products && products?.map((product: any) => (
-              <div key={product.id}  className="bg-white rounded-lg overflow-hidden shadow-md cursor-none">
+              <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow-md cursor-none">
                 <img src={product.image} alt={product.title} className="w-full h-56 object-cover" />
                 <div className="p-4">
                   <h3 className="text-xl font-semibold mb-2">{product.title.length > 20

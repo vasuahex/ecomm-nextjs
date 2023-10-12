@@ -13,9 +13,9 @@ const HomePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("https://fakestoreapi.com/products?limit=5")
-        setProducts(res.data);
-        return res.data
+        const res = await axios.get("https://dummyjson.com/products?limit=10")
+        setProducts(res.data.products);
+        return res.data.products
       } catch (error) {
         console.log(error);
       }
@@ -44,7 +44,7 @@ const HomePage = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {products && products?.map((product: any) => (
               <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow-md cursor-none">
-                <img src={product.image} alt={product.title} className="w-full h-56 object-cover" />
+                <img src={product.thumbnail} alt={product.title} className="w-full h-56 object-cover" />
                 <div className="p-4">
                   <h3 className="text-xl font-semibold mb-2">{product.title.length > 20
                     ? `${product.title.substring(0, 20)}...`

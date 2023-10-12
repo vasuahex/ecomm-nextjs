@@ -22,7 +22,7 @@ const Navbar = () => {
     const { value } = useSelector((state: RootState) => state.auth)
     const currentUser = JSON.parse(localStorage.getItem("currentUser") as string)
 
-    console.log(value, "val");
+    // console.log(value, "val");
 
     const handleMouseEnter = () => {
         setIsHovered(true);

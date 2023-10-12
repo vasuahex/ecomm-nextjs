@@ -1,5 +1,6 @@
 "use client"
 import React, { useState, useEffect } from 'react';
+import * as yup from 'yup'; // Import Yup
 import { storingAllUsers } from '@/redux/features/auth-slice';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -7,7 +8,17 @@ import { useRouter } from 'next/navigation';
 
 const SignupPage = () => {
     const dispatch = useDispatch();
-    const router = useRouter()
+    const router = useRouter();
+
+    // Define a Yup schema for form validation
+    const validationSchema = yup.object().shape({
+        firstName: yup.string().min(2).required('First Name is required'),
+        lastName: yup.string().min(2).required('Last Name is required'),
+        email: yup.string().email('Invalid email').required('Email is required'),
+        password: yup.string().required('Password is required').min(8, 'Password must be at least 6 characters'),
+        confirmPassword: yup.string().oneOf([yup.ref('password')], 'Passwords must match'),
+    });
+
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -15,6 +26,8 @@ const SignupPage = () => {
         password: '',
         confirmPassword: '',
     });
+
+    const [errors, setErrors] = useState<any>({}); // To store validation errors
 
     const handleInputChange = (e: any) => {
         const { name, value, files } = e.target;
@@ -33,24 +46,40 @@ const SignupPage = () => {
 
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        dispatch(storingAllUsers(formData));
-        setFormData({
-            firstName: '',
-            lastName: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-        });
-        router.push("/login")
+
+        // Validate the form data against the schema
+        validationSchema.validate(formData, { abortEarly: false })
+            .then(() => {
+                // Form data is valid
+                dispatch(storingAllUsers(formData));
+                setFormData({
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    password: '',
+                    confirmPassword: '',
+                });
+                router.push("/login");
+            })
+            .catch((err) => {
+                // Form data is invalid; set the validation errors
+                const validationErrors: any = {};
+                err.inner.forEach((error: any) => {
+                    validationErrors[error.path] = error.message;
+                });
+                setErrors(validationErrors);
+            });
     };
+
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            var userIsAuthenticated = localStorage.getItem("currentUser") !== null
+            const userIsAuthenticated = localStorage.getItem("currentUser") !== null;
             if (userIsAuthenticated) {
                 router.push('/');
             }
         }
     }, []);
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 py-14">
             <div className="bg-white p-8 rounded shadow-md w-96">
@@ -68,6 +97,7 @@ const SignupPage = () => {
                             className="border rounded w-full py-2 px-3"
                             required
                         />
+                        {errors.firstName && <p className="text-red-500">{errors.firstName}</p>}
                     </div>
                     <div className="mb-4">
                         <label htmlFor="lastName" className="block text-gray-600 mb-2">Last Name</label>
@@ -81,6 +111,7 @@ const SignupPage = () => {
                             className="border rounded w-full py-2 px-3"
                             required
                         />
+                        {errors.lastName && <p className="text-red-500">{errors.lastName}</p>}
                     </div>
                     <div className="mb-4">
                         <label htmlFor="email" className="block text-gray-600 mb-2">Email</label>
@@ -94,6 +125,7 @@ const SignupPage = () => {
                             className="border rounded w-full py-2 px-3"
                             required
                         />
+                        {errors.email && <p className="text-red-500">{errors.email}</p>}
                     </div>
                     <div className="mb-4">
                         <label htmlFor="password" className="block text-gray-600 mb-2">Password</label>
@@ -107,6 +139,7 @@ const SignupPage = () => {
                             className="border rounded w-full py-2 px-3"
                             required
                         />
+                        {errors.password && <p className="text-red-500">{errors.password}</p>}
                     </div>
                     <div className="mb-4">
                         <label htmlFor="confirmPassword" className="block text-gray-600 mb-2">Confirm Password</label>
@@ -120,11 +153,12 @@ const SignupPage = () => {
                             className="border rounded w-full py-2 px-3"
                             required
                         />
+                        {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword}</p>}
                     </div>
 
                     <button
                         type="submit"
-                        className="bg-blue-500 text-center text-white rounded py-2 px-4 hover:bg-blue-600"
+                        className="bg-blue-500 text-center text-white rounded py-2 px-4 hover-bg-blue-600"
                     >
                         Sign Up
                     </button>

@@ -10,6 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { toast } from "react-toastify"
 import { useDispatch } from "react-redux";
 import { AiOutlineArrowLeft } from "react-icons/ai";
+import { BsCurrencyDollar, BsPercent } from "react-icons/bs";
 import Link from "next/link";
 
 const ProductPage = () => {
@@ -88,11 +89,11 @@ const ProductPage = () => {
                     <h1 className="text-2xl font-semibold mb-2">{product.title}</h1>
                     <p className="text-gray-600">{product.description}</p>
                     <div className="mt-4">
-                        <p className="text-xl font-semibold text-blue-500">
-                            ${product.price}
+                        <p className="text-xl font-semibold text-blue-500 flex items-center">
+                            <BsCurrencyDollar />{product.price}
                         </p>
-                        <p className="text-sm text-gray-500">
-                            {product.discountPercentage}% off
+                        <p className="text-sm text-gray-500 flex items-center">
+                            {product.discountPercentage} <BsPercent/> off
                         </p>
                         <p className="text-yellow-500">Rating:</p>
                         <div className="ml-2 flex">

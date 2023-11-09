@@ -10,9 +10,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { handleValueChange } from '@/redux/features/auth-slice'
 
-
-
-
 const Navbar = () => {
     const dispatch = useDispatch()
     const router = useRouter()
@@ -44,18 +41,16 @@ const Navbar = () => {
             setActive(false)
         }
     })
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         dispatch(handleValueChange(value));
         router.push("/shop");
     };
-    const handleInputChange = (e: any) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log(e.target.value, "e");
-
         dispatch(handleValueChange(e.target.value));
     };
     return (
-
         <nav className={`${active === true ? "shadow-sm fixed top-0 left-0 w-full z-10 transition-all ease-in-out " : null} bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% p-4 w-full`}>
             <div className="container mx-auto">
                 <div className="flex justify-between items-center">
@@ -105,7 +100,6 @@ const Navbar = () => {
                             </Link>
                         )}
                     </div>
-
                 </div>
             </div>
         </nav>

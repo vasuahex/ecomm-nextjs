@@ -1,8 +1,10 @@
 
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { DynamicHeader } from '../page';
-
-const LoginLayout = ({ children }: any) => {
+interface Children {
+    children: ReactNode;
+}
+const LoginLayout = ({ children }: Children) => {
     return (
         <div>
             <DynamicHeader />

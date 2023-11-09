@@ -1,10 +1,19 @@
 "use client"
 import React, { useState, useEffect } from 'react';
-import * as yup from 'yup'; // Import Yup
+import * as yup from 'yup';
 import { storingAllUsers } from '@/redux/features/auth-slice';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { useRouter } from 'next/navigation';
+
+// Define the interface for your form data
+interface FormData {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
 
 const SignupPage = () => {
     const dispatch = useDispatch();
@@ -15,11 +24,11 @@ const SignupPage = () => {
         firstName: yup.string().min(2).required('First Name is required'),
         lastName: yup.string().min(2).required('Last Name is required'),
         email: yup.string().email('Invalid email').required('Email is required'),
-        password: yup.string().required('Password is required').min(8, 'Password must be at least 6 characters'),
+        password: yup.string().required('Password is required').min(8, 'Password must be at least 8 characters'),
         confirmPassword: yup.string().oneOf([yup.ref('password')], 'Passwords must match'),
     });
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormData>({
         firstName: '',
         lastName: '',
         email: '',
@@ -27,24 +36,24 @@ const SignupPage = () => {
         confirmPassword: '',
     });
 
-    const [errors, setErrors] = useState<any>({}); // To store validation errors
+    const [errors, setErrors] = useState<Record<string, string>>({}); // To store validation errors
 
-    const handleInputChange = (e: any) => {
+    const handleInputChange = (e: React.ChangeEvent<any>) => {
         const { name, value, files } = e.target;
         if (name === 'profileImage' && files && files.length > 0) {
             setFormData({
                 ...formData,
-                [name]: files[0],
+                [name]: files[0], // Dynamically update the property based on the 'name'
             });
         } else {
             setFormData({
                 ...formData,
-                [name]: value,
+                [name]: value, // Dynamically update the property based on the 'name'
             });
         }
     };
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         // Validate the form data against the schema
@@ -61,11 +70,11 @@ const SignupPage = () => {
                 });
                 router.push("/login");
             })
-            .catch((err) => {
+            .catch((err: yup.ValidationError) => {
                 // Form data is invalid; set the validation errors
-                const validationErrors: any = {};
-                err.inner.forEach((error: any) => {
-                    validationErrors[error.path] = error.message;
+                const validationErrors: Record<string, string> = {};
+                err.inner.forEach((error) => {
+                    validationErrors[error.path!] = error.message;
                 });
                 setErrors(validationErrors);
             });
@@ -158,7 +167,7 @@ const SignupPage = () => {
 
                     <button
                         type="submit"
-                        className="bg-blue-500 text-center text-white rounded py-2 px-4 hover-bg-blue-600"
+                        className="bg-blue-500 text-center text-white rounded py-2 px-4 hover:bg-blue-600"
                     >
                         Sign Up
                     </button>

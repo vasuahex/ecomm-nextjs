@@ -1,6 +1,7 @@
 "use client";
 import dynamic from 'next/dynamic'
-
+import { SideBySideMagnifier } from 'react-image-magnifiers';
+import { Product } from '@/components/Interface';
 export const DynamicHeader = dynamic(() => import('../components/Navbar'), {
   ssr: false,
 })
@@ -9,7 +10,10 @@ import Link from 'next/link';
 import React from 'react';
 import { useEffect, useState } from "react"
 const HomePage = () => {
-  const [products, setProducts] = useState<any>()
+
+  const [products, setProducts] = useState<Product[]>()
+  // console.log(products);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -21,8 +25,8 @@ const HomePage = () => {
       }
     }
     fetchData()
-  }, [])
 
+  }, [])
 
   return (
     <div>
@@ -42,7 +46,7 @@ const HomePage = () => {
         <div className="container mx-auto">
           <h2 className="text-3xl font-semibold mb-8">Featured Products</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products && products?.map((product: any) => (
+            {products && products?.map((product: Product) => (
               <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow-md cursor-none">
                 <img src={product.thumbnail} alt={product.title} className="w-full h-56 object-cover" />
                 <div className="p-4">
@@ -64,7 +68,8 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
+      <div>
+      </div>
     </div>
   );
 };

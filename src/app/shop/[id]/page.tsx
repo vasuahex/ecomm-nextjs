@@ -12,14 +12,30 @@ import { useDispatch } from "react-redux";
 import { AiOutlineArrowLeft } from "react-icons/ai";
 import { BsCurrencyDollar, BsPercent } from "react-icons/bs";
 import Link from "next/link";
+import { Product } from "@/components/Interface";
 
+const initialProduct: Product = {
+    id: 0,
+    title: "",
+    description: "",
+    price: 0,
+    discountPercentage: 0,
+    rating: 0,
+    stock: 0,
+    brand: "",
+    category: "",
+    thumbnail: "",
+    images: [],
+};
 const ProductPage = () => {
     const dispatch = useDispatch()
     const router = useRouter()
-    const [product, setProduct] = useState<any>({});
+    const [product, setProduct] = useState<Product>(initialProduct);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const { id } = useParams()
+    // console.log(product,"single");
+
 
     const handleThumbnailClick = (index: number) => {
         setCurrentImageIndex(index);
@@ -28,7 +44,7 @@ const ProductPage = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res: any = await axios.get(`https://dummyjson.com/products/${id}`);
+                const res = await axios.get(`https://dummyjson.com/products/${id}`);
                 setProduct(res.data);
                 setIsLoading(false);
             } catch (error) {
@@ -62,7 +78,7 @@ const ProductPage = () => {
         );
     }
     const currentUser = localStorage.getItem("currentUser")
-    const handleAddToCart = (product: any) => {
+    const handleAddToCart = (product: Product) => {
         if (currentUser !== null) {
             dispatch(addToCart(product));
             toast.success("item added to cart")
@@ -82,7 +98,7 @@ const ProductPage = () => {
                     <img
                         src={product.images[currentImageIndex]}
                         alt={`${product.title} - Image ${currentImageIndex + 1}`}
-                        className="w-full h-auto"
+                        className="w-[500px] max-h-[450px]"
                     />
                 </div>
                 <div className="w-1/2 p-4">
@@ -93,7 +109,7 @@ const ProductPage = () => {
                             <BsCurrencyDollar />{product.price}
                         </p>
                         <p className="text-sm text-gray-500 flex items-center">
-                            {product.discountPercentage} <BsPercent/> off
+                            {product.discountPercentage} <BsPercent /> off
                         </p>
                         <p className="text-yellow-500">Rating:</p>
                         <div className="ml-2 flex">
@@ -106,9 +122,7 @@ const ProductPage = () => {
                     </div>
                     <button className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
                         onClick={() => handleAddToCart(product)}
-
                     >
-
                         AddToCart
                     </button>
                     <div className="mt-4">
@@ -121,7 +135,7 @@ const ProductPage = () => {
             <div className="mt-8">
                 <h2 className="text-xl font-semibold">Product Images:</h2>
                 <div className="flex mt-4">
-                    {product.images.map((image: any, index: number) => (
+                    {product.images.map((image: string, index: number) => (
                         <img
                             key={index}
                             src={image}

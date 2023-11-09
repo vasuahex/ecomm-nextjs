@@ -6,16 +6,18 @@ import { RootState } from '@/redux/store';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useRouter } from 'next/navigation';
+import { User } from '@/components/Interface';
 
 const LoginPage = () => {
     const router = useRouter()
     const { allUsers } = useSelector((state: RootState) => state.auth);
+    // console.log(allUsers, "all");
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
 
-    const handleInputChange = (e: any) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
@@ -23,7 +25,7 @@ const LoginPage = () => {
         });
     };
 
-    const [currentUser, setCurrentUser] = useState(null);
+    const [currentUser, setCurrentUser] = useState<User|null>(null);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -34,10 +36,10 @@ const LoginPage = () => {
         }
     }, []);
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const user = allUsers.find(
-            (user: any) => user.email === formData.email && user.password === formData.password
+            (user: User) => user.email === formData.email && user.password === formData.password
         );
         if (user && typeof window !== 'undefined') {
             setCurrentUser(user);
@@ -83,7 +85,7 @@ const LoginPage = () => {
                             id="password"
                             name="password"
                             value={formData.password}
-                            onChange={handleInputChange}
+                            onChange={(e) => handleInputChange(e)}
                             placeholder="Password"
                             className="border rounded w-full py-2 px-3"
                             required

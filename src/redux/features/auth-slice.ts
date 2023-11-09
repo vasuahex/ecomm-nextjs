@@ -1,12 +1,13 @@
 "use client"
+import { Product, User } from "@/components/Interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { toast } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
 
 type InitialState = {
     value: string
-    allUsers: any
-    cart: any
+    allUsers: User[]
+    cart: Product[]
 }
 
 const getInitialState = (): InitialState => {
@@ -35,7 +36,7 @@ export const authSlice = createSlice({
             state.value = action.payload
         },
         storingAllUsers: (state, action) => {
-            const userExists = state.allUsers.some((user: any) => user.email === action.payload.email);
+            const userExists = state.allUsers.some((user: User) => user.email === action.payload.email);
             if (userExists) {
                 toast.error("user already exists")
             }
@@ -49,27 +50,36 @@ export const authSlice = createSlice({
         },
         addToCart: (state, action) => {
             const { id, title, price, thumbnail } = action.payload;
-            const existingItem = state.cart.find((item: any) => item.id === id);
+            const existingItem = state.cart.find((item: Product) => item.id === id);
 
             if (existingItem) {
-                existingItem.quantity += 1;
+                existingItem.quantity = (existingItem.quantity || 0) + 1;
                 if (typeof window !== 'undefined') {
                     localStorage.setItem("cart", JSON.stringify(state.cart))
-                }   
+                }
             } else {
                 if (typeof window !== 'undefined') {
-                    state.cart.push({ id, title, price, quantity: 1, thumbnail });
+                    state.cart.push({
+                        id, title, price, quantity: 1, thumbnail,
+                        description: "",
+                        discountPercentage: 0,
+                        rating: 0,
+                        stock: 0,
+                        brand: "",
+                        category: "",
+                        images: []
+                    });
                     localStorage.setItem("cart", JSON.stringify(state.cart))
                 }
             }
         },
         removeFromCart: (state, action) => {
             const { id } = action.payload;
-            const itemIndex = state.cart.findIndex((item: any) => item.id === id);
+            const itemIndex = state.cart.findIndex((item: Product) => item.id === id);
 
             if (itemIndex !== -1) {
-                if (state.cart[itemIndex].quantity > 1) {
-                    state.cart[itemIndex].quantity -= 1;
+                if (state.cart[itemIndex].quantity! > 1) {
+                    state.cart[itemIndex].quantity! -= 1;
                     if (typeof window !== 'undefined') {
                         localStorage.setItem("cart", JSON.stringify(state.cart))
                     }

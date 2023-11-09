@@ -10,12 +10,13 @@ import { useRouter } from 'next/navigation';
 import 'react-toastify/dist/ReactToastify.css';
 import { toast } from "react-toastify"
 import { SyncLoader } from 'react-spinners';
+import { Product } from '@/components/Interface';
 
 const ShopPage = () => {
     const dispatch = useDispatch()
     const router = useRouter()
-    const [products, setProducts] = useState<any[]>([]);
-    const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [categoryFilter, setCategoryFilter] = useState('');
     const [sortOption, setSortOption] = useState('');
     const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +25,7 @@ const ShopPage = () => {
     const currentUser = typeof window !== 'undefined' ? localStorage.getItem("currentUser") : null;
 
 
-    const handleAddToCart = (product: any) => {
+    const handleAddToCart = (product:Product) => {
         if (currentUser !== null) {
             dispatch(addToCart(product));
             toast.success("item added to cart")
@@ -32,7 +33,7 @@ const ShopPage = () => {
         else {
             router.push("/login")
         }
-        console.log("empty", product);
+        // console.log("empty", product);
     };
 
 
@@ -142,7 +143,6 @@ const ShopPage = () => {
     return (
         <div className="container mx-auto mt-8">
             <h1 className="text-3xl font-semibold mb-4">Shop</h1>
-
             {/* Category Filter */}
             <div className='flex gap-10'>
                 <div className="mb-4">
@@ -186,7 +186,7 @@ const ShopPage = () => {
                 </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {currentProducts.map((product: any) => (
+                {currentProducts.map((product: Product) => (
                     <div key={product.id} className="bg-white rounded-lg overflow-hidden shadow-md cursor-pointer">
                         <Link href={`/shop/${product.id}`}>
                             <img src={product.thumbnail} alt={product.title} className="w-full h-56 object-cover" />
@@ -203,7 +203,6 @@ const ShopPage = () => {
                                 <button
                                     onClick={() => handleAddToCart(product)}
                                     className="bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded-full"
-
                                 >
                                     Add to Cart
                                 </button>

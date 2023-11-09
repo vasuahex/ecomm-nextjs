@@ -1,7 +1,9 @@
 
-import React from 'react';
-
-const LoginLayout = ({ children }: any) => {
+import React, { ReactNode } from 'react';
+interface ContextProps {
+    children: ReactNode;
+}
+const LoginLayout = ({ children }: ContextProps) => {
     return (
         <div>
             {children}

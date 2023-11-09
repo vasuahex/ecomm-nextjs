@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart } from '@/redux/features/auth-slice';
 import { RootState } from '@/redux/store';
 import Link from 'next/link';
+import { Product } from '@/components/Interface';
 
 const Cart = () => {
     const { cart } = useSelector((state: RootState) => state.auth);
@@ -13,9 +14,9 @@ const Cart = () => {
         dispatch(removeFromCart({ id }));
     };
 
-    const cartTotal = cart.reduce((total: number, item: any) => total + item.price * item.quantity, 0);
+    const cartTotal = cart.reduce((total: number, item: Product) => total + item.price * item.quantity!, 0);
 
-    if (typeof window !== 'undefined' ) {
+    if (typeof window !== 'undefined') {
         var userIsAuthenticated = localStorage.getItem("currentUser") === null
 
         if (userIsAuthenticated) {
@@ -51,11 +52,11 @@ const Cart = () => {
                     <div className="mt-8">
                         <div className="flow-root">
                             <ul role="list" className="-my-6 divide-y divide-gray-200">
-                                {cart.map((item: any) => (
+                                {cart.map((item: Product) => (
                                     <li key={item.id} className="flex py-6 cart-item">
-                                        <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                        <Link href={`/shop/${item.id}`} className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                             <img src={item.thumbnail} alt={item.title} className="h-full w-full object-cover object-center" />
-                                        </div>
+                                        </Link>
 
                                         <div className="ml-4 flex flex-1 flex-col">
                                             <div>
@@ -63,9 +64,9 @@ const Cart = () => {
                                                     <h3>
                                                         <h4>{item.title}</h4>
                                                     </h3>
-                                                    <p className="ml-4 mr-5">${(item.price * item.quantity).toFixed(2)}</p>
+                                                    <p className="ml-4 mr-5">${(item.price * item.quantity!).toFixed(2)}</p>
                                                 </div>
-                                                <p className="mt-1 text-sm text-gray-500">{item.color}</p>
+                                                <p className="mt-1 text-sm text-gray-500">{item.color!}</p>
                                             </div>
                                             <div className="flex flex-1 items-end justify-between text-sm mr-4">
                                                 <p className="text-gray-500">Qty {item.quantity}</p>

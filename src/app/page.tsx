@@ -1,6 +1,5 @@
 "use client";
 import dynamic from 'next/dynamic'
-import { SideBySideMagnifier } from 'react-image-magnifiers';
 import { Product } from '@/components/Interface';
 export const DynamicHeader = dynamic(() => import('../components/Navbar'), {
   ssr: false,
